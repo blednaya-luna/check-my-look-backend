@@ -1,0 +1,18 @@
+*.log
+
+# API keys and secrets
+.env
+
+# Dependency directory
+node_modules
+
+# Editors
+.idea
+*.iml
+.vscode
+
+# Ignore built ts files
+dist/**/*
+
+# Local MongoDB
+data
