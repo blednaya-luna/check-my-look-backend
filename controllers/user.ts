@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { check, sanitize, validationResult } from 'express-validator';
 import passport from 'passport';
 import { IVerifyOptions } from 'passport-local';
+
 import { User, UserDocument } from '../models/User';
 
 /**
@@ -23,19 +24,17 @@ export const postLogin = async (req: Request, res: Response, next: NextFunction)
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        req.flash('errors', errors.array());
-        return res.redirect('/login');
+        return res.json(errors);
     }
 
     passport.authenticate('local', (err: Error, user: UserDocument, info: IVerifyOptions) => {
         if (err) { return next(err); }
         if (!user) {
-            req.flash('errors', { msg: info.message });
-            return res.redirect('/login');
+            return res.json(info.message);
         }
         req.logIn(user, (err) => {
             if (err) { return next(err); }
-            req.flash('success', { msg: 'Success! You are logged in.' });
+            // 'success', 'Success! You are logged in.'
             res.redirect(req.session.returnTo || '/');
         });
     })(req, res, next);
@@ -64,8 +63,7 @@ export const postSignup = async (req: Request, res: Response, next: NextFunction
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        req.flash('errors', errors.array());
-        return res.redirect('/signup');
+        return res.json(errors);
     }
 
     const user = new User({
@@ -76,7 +74,7 @@ export const postSignup = async (req: Request, res: Response, next: NextFunction
     User.findOne({ email: req.body.email }, (err, existingUser) => {
         if (err) { return next(err); }
         if (existingUser) {
-            req.flash('errors', { msg: 'Account with that email address already exists.' });
+            // 'errors', 'Account with that email address already exists.'
             return res.redirect('/signup');
         }
         user.save((err) => {
