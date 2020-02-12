@@ -60,7 +60,6 @@ mongoose.connection.on('error', (err) => {
 app.set('port', process.env.PORT || 8080);
 app.use(statusMonitor());
 app.use(compression());
-app.use(compression());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
